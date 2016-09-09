@@ -1,5 +1,10 @@
 /bin/
 /build.fxbuild
+<<<<<<< HEAD
 
 /bin/
 /.classpath
+=======
+/bin/
+/.classpath
+>>>>>>> branch 'master' of https://github.com/LordKharn/Pizzeria
