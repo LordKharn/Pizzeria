@@ -97,7 +97,7 @@ public class KundenController implements Initializable  {
     private TreeTableColumn<Double, Double> Preis;
     
     
-    private int test = 0;
+    private int test = 1;
     
     
     TreeItem<Bestellung> root = new TreeItem<>(initBestellung);
