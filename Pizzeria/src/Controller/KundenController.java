@@ -96,13 +96,8 @@ public class KundenController implements Initializable  {
     @FXML
     private TreeTableColumn<Double, Double> Preis;
     
-    
-    private int test = 1;
-    
-    
     TreeItem<Bestellung> root = new TreeItem<>(initBestellung);
 
-	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		root.setExpanded(true);
