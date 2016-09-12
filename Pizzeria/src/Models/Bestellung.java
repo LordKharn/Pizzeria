@@ -6,8 +6,6 @@ import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 
 public class Bestellung {
 	private IntegerProperty id;
@@ -17,8 +15,6 @@ public class Bestellung {
 	private Getraenk bonusGetraenke;
 	private DoubleProperty preis;
 	
-	private DoubleProperty price;
-	private StringProperty item;
 
 	public Bestellung(Kunde kunde, ArrayList<Pizza> pizzen, ArrayList<Getraenk> getraenke,
 			Getraenk bonusGetraenke, double preis) {
@@ -59,11 +55,6 @@ public class Bestellung {
 	public Bestellung() {
 		this.pizzen = new ArrayList<Pizza>();
 		this.getraenke = new ArrayList<Getraenk>();
-	}
-
-	public Bestellung(String item, double price) {
-		this.item = new SimpleStringProperty(item);
-		this.price = new SimpleDoubleProperty(price);
 	}
 
 	/**

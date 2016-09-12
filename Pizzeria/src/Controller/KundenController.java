@@ -90,13 +90,13 @@ public class KundenController implements Initializable  {
     private GridPane bestellGetraenke;
 	private Main mainApp;
     @FXML
-    private TreeTableView<Bestellung> bestellungsAnzeige;
+    private TreeTableView<TreeTableItem> bestellungsAnzeige;
     @FXML
-    private TreeTableColumn<Bestellung, String> bestellung;
+    private TreeTableColumn<TreeTableItem, String> bestellung;
     @FXML
-    private TreeTableColumn<Double, Double> Preis;
+    private TreeTableColumn<TreeTableItem, Double> Preis;
     
-    TreeItem<Bestellung> root = new TreeItem<>(initBestellung);
+    TreeItem<TreeTableItem> root = new TreeItem<>();
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -217,7 +217,6 @@ public class KundenController implements Initializable  {
 
     @FXML
     void sucheKundeButton(ActionEvent event) {
-    	//TODO Bessere möglichkeit ?
     	try {
 			if(!sucheKunde.getText().isEmpty()) {
 				KundenTabelle.setItems(mainApp.getKunde(Integer.parseInt(sucheKunde.getText())));
@@ -259,7 +258,6 @@ public class KundenController implements Initializable  {
     
     @FXML
     void kundenAnlegen(ActionEvent event) {
-    	//TODO Bessere möglichkeit ?
     	try {
 				DAOFactory.getKundeDAO().insertKunde(new Kunde(kundenNameAnlegen.getText(), kundenStrasseAnlegen.getText(), kundenOrtAnlegen.getText(), Integer.parseInt(kundenPlzAnlegen.getText())));
 				kundenNameAnlegen.clear();
@@ -305,7 +303,7 @@ public class KundenController implements Initializable  {
 //    	bestellung.setCellValueFactory(TreeTableColumn.CellDataFeatures<Bestellung, String> param) ->
 //    	new ReadOnlyStringWrapper(param.getValue().getValue().toString()));
     	
-    	bestellung.setCellValueFactory((CellDataFeatures<Bestellung, String> param) -> 
+    	bestellung.setCellValueFactory((CellDataFeatures<TreeTableItem, String> param) -> 
         new ReadOnlyStringWrapper(param.getValue().getValue().toString())); 
     	
 		ArrayList<Pizza> pizzen = initBestellung.getPizzen();
