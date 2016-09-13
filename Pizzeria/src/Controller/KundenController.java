@@ -25,6 +25,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
@@ -96,6 +97,10 @@ public class KundenController implements Initializable  {
     private TreeTableColumn<TreeTableItem, String> bestellung;
     @FXML
     private TreeTableColumn<TreeTableItem, Double> Preis;
+    @FXML
+    private Label labelPizzaAuswählen;
+    @FXML
+    private Button neuePizza;
     
     TreeItem<TreeTableItem> root = new TreeItem<>();
 
@@ -108,6 +113,7 @@ public class KundenController implements Initializable  {
 		bestellButtonsEinfach.setVisible(false);
     	bestellButtonsSpeziel.setVisible(false);
     	bestellGetraenke.setVisible(false);
+    	neuePizza.setVisible(false);
 		KundenId.setCellValueFactory(new PropertyValueFactory<Kunde, Integer>("kundenNummer"));
 		KundenName.setCellValueFactory(new PropertyValueFactory<Kunde, String>("name"));
 		KundenStrasse.setCellValueFactory(new PropertyValueFactory<Kunde, String>("strasse"));
@@ -126,6 +132,8 @@ public class KundenController implements Initializable  {
                     	bestellButtonsSpeziel.setVisible(true);
                     	bestellGetraenke.setVisible(true);
                     	pizzaGroesse.setVisible(false);
+                    	labelPizzaAuswählen.setVisible(false);
+                    	neuePizza.setVisible(true);
                     }    
 		});
 		
@@ -202,9 +210,6 @@ public class KundenController implements Initializable  {
 				bestellGetraenke.add(button,0,zeile);
 			}	
 		}
-		
-		
-		
 	}
 	
 	@FXML
@@ -331,10 +336,15 @@ public class KundenController implements Initializable  {
     	for(int i = 0; i <initBestellung.getGetraenke().size(); i++){
     		
     	}
-//    	bestellungsAnzeige.setRoot(root);
     } 
+    
+    @FXML
+    void neuePizza(MouseEvent event) {
+
+    	pizzaGroesse.setVisible(true);
+		bestellButtonsEinfach.setVisible(false);
+    	bestellButtonsSpeziel.setVisible(false);
+    	bestellGetraenke.setVisible(false);
+    	neuePizza.setVisible(false);
+    }
 }
-
-
-
-
