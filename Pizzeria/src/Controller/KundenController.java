@@ -39,6 +39,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import javafx.util.Callback;
 
 
 
@@ -299,22 +300,31 @@ public class KundenController implements Initializable  {
     }
     
     public void aktualisierungBestellView(){
-    	TreeItem<String> root = new TreeItem<>("Bestellung");
-//    	bestellung.setCellValueFactory(TreeTableColumn.CellDataFeatures<Bestellung, String> param) ->
-//    	new ReadOnlyStringWrapper(param.getValue().getValue().toString()));
-    	
+        TreeItem<TreeTableItem> root = new TreeItem<>();
+    	root.setExpanded(true);
+		bestellungsAnzeige.setRoot(root);
+		bestellungsAnzeige.setShowRoot(false);
+
     	bestellung.setCellValueFactory((CellDataFeatures<TreeTableItem, String> param) -> 
-        new ReadOnlyStringWrapper(param.getValue().getValue().toString())); 
+        new ReadOnlyStringWrapper(param.getValue().getValue().getName()));
+    	
+    	Preis.setCellValueFactory(new Callback<CellDataFeatures<TreeTableItem, Double>, ObservableValue<Double>>(){
+    		@Override
+    		public ObservableValue<Double> call(CellDataFeatures<TreeTableItem,Double> param2){
+    			return param2.getValue().getValue().getPreisProperty().asObject();
+    		}
+    	});
     	
 		ArrayList<Pizza> pizzen = initBestellung.getPizzen();
     	for(int i = 0; i < pizzen.size() ; i++){
     		ArrayList<Belag> belag = pizzen.get(i).getBelag();
     		System.out.println(pizzen.get(i).getBelag());
-    		TreeItem<String> pizza = new TreeItem<>(pizzen.get(i).getPizzaGroesse().getGroesse());
+    		TreeItem<TreeTableItem> pizza = new TreeItem<>(new TreeTableItem("Pizza "+pizzen.get(i).getPizzaGroesse().getGroesse(),pizzen.get(i).getPreis()));
     		for(int y = 0; y < belag.size(); y++) {
-    			pizza.getChildren().add(new TreeItem<>(belag.get(y).getName()));
+    			pizza.getChildren().add(new TreeItem<>(new TreeTableItem(belag.get(y).getName(),belag.get(y).getPreisL())));//TODO richtigen Preis für größe
     			System.out.println(belag.get(y).getName());
     		}
+    		pizza.setExpanded(true);
     		root.getChildren().add(pizza);
     	}
     	
@@ -325,7 +335,6 @@ public class KundenController implements Initializable  {
     } 
 }
 
-//TreeItem<Bestellung> root = new TreeItem<>(new Bestellung("Bestellung", 0.00));
-//root.setExpanded(true);
-//bestellungsAnzeige.setRoot(root);
-//bestellungsAnzeige.setShowRoot(false);
+
+
+

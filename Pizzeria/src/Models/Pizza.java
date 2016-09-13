@@ -11,7 +11,7 @@ public class Pizza {
 	private IntegerProperty id;
 	private PizzaGroesse groesse;
 	private ArrayList<Belag> belag;
-	private DoubleProperty preis;
+	private DoubleProperty preis = new SimpleDoubleProperty(0);;
 	
 	public Pizza(int id, PizzaGroesse groesse, ArrayList<Belag> belag, double preis) {
 		this.id = new SimpleIntegerProperty(id);

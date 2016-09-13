@@ -42,5 +42,8 @@ public class TreeTableItem {
 		this.preis.set(preis);;
 	}
 	
+	public DoubleProperty getPreisProperty(){
+		return preis;
+	}
 	
 }	
