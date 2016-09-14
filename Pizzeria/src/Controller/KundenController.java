@@ -152,7 +152,7 @@ public class KundenController implements Initializable  {
                         	labelPizzaAuswählen.setVisible(false);
                         	neuePizza.setVisible(true);
                     	}
-                    }  
+                    }
                     
 		});
 		
@@ -364,6 +364,9 @@ public class KundenController implements Initializable  {
     		TreeItem<TreeTableItem> getraenk = new TreeItem<>(new TreeTableItem("Getränk "+ initBestellung.getGetraenke().get(i).getName(),initBestellung.getGetraenke().get(i).getPreis()));
     		root.getChildren().add(getraenk);
     	}
+    	
+    	gesamtAnzeige.setText(Double.toString(initBestellung.getPreis()));
+    	
     } 
     
     @FXML

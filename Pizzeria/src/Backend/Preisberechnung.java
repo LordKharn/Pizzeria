@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import Models.Belag;
 import Models.Bestellung;
+import Models.Getraenk;
 import Models.Pizza;
 
 public class Preisberechnung {
@@ -49,6 +50,15 @@ public class Preisberechnung {
 	}
 	
 	public static void preisBerechnung(Bestellung bestellung){
-		//TODO
+		ArrayList<Pizza> pizzen = bestellung.getPizzen();
+		ArrayList<Getraenk> getränke = bestellung.getGetraenke();
+		double gesamtpreis = 0;
+		for(int i = 0; i < pizzen.size(); i++){
+			gesamtpreis += pizzen.get(i).getPreis();
+		}
+		for(int i = 0; i < getränke.size(); i++){
+			gesamtpreis += getränke.get(i).getPreis();
+		}
+		bestellung.setPreis(gesamtpreis);
 	}
 }

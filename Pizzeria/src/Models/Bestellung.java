@@ -13,7 +13,7 @@ public class Bestellung {
 	private ArrayList<Pizza> pizzen;
 	private ArrayList<Getraenk> getraenke;
 	private Getraenk bonusGetraenke;
-	private DoubleProperty preis;
+	private DoubleProperty preis = new SimpleDoubleProperty(0);
 	
 
 	public Bestellung(Kunde kunde, ArrayList<Pizza> pizzen, ArrayList<Getraenk> getraenke,
