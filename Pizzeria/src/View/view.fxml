@@ -65,13 +65,14 @@
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                   </GridPane>
-                  <TreeTableView fx:id="bestellungsAnzeige" layoutX="1041.0" layoutY="28.0" prefHeight="740.0" prefWidth="411.0">
+                  <TreeTableView fx:id="bestellungsAnzeige" layoutX="1041.0" layoutY="28.0" prefHeight="719.0" prefWidth="411.0">
                     <columns>
                       <TreeTableColumn fx:id="bestellung" prefWidth="275.0" text="Bestellung" />
                       <TreeTableColumn fx:id="Preis" prefWidth="135.0" text="Preis" />
                     </columns>
                   </TreeTableView>
                   <Button fx:id="neuePizza" layoutX="288.0" layoutY="78.0" mnemonicParsing="false" onMouseClicked="#neuePizza" text="Neue Pizza" />
+                  <Button fx:id="bestellungAnlegenButton" layoutX="1041.0" layoutY="770.0" mnemonicParsing="false" onMouseClicked="#bestellungAnlegen" text="Bestellung Abschicken" />
                </children></AnchorPane>
       </content>
     </Tab>

@@ -101,6 +101,8 @@ public class KundenController implements Initializable  {
     private Label labelPizzaAuswählen;
     @FXML
     private Button neuePizza;
+    @FXML
+    private Button bestellungAnlegenButton;
     
     TreeItem<TreeTableItem> root = new TreeItem<>();
 
@@ -127,14 +129,17 @@ public class KundenController implements Initializable  {
 
 		pizzaGroesse.valueProperty().addListener(new ChangeListener<String>() {
                     @Override public void changed(ObservableValue ov, String t, String pizzaGr) {
-                    	pizzaAuswahl(pizzaGr);
-                    	bestellButtonsEinfach.setVisible(true);
-                    	bestellButtonsSpeziel.setVisible(true);
-                    	bestellGetraenke.setVisible(true);
-                    	pizzaGroesse.setVisible(false);
-                    	labelPizzaAuswählen.setVisible(false);
-                    	neuePizza.setVisible(true);
-                    }    
+                    	if (pizzaGr != null){
+                    		pizzaAuswahl(pizzaGr);
+                        	bestellButtonsEinfach.setVisible(true);
+                        	bestellButtonsSpeziel.setVisible(true);
+                        	bestellGetraenke.setVisible(true);
+                        	pizzaGroesse.setVisible(false);
+                        	labelPizzaAuswählen.setVisible(false);
+                        	neuePizza.setVisible(true);
+                    	}
+                    }  
+                    
 		});
 		
 		Iterator<Getraenk> itG = KonstantInstanceSaver.getGetraenke().values().iterator();
@@ -297,6 +302,7 @@ public class KundenController implements Initializable  {
     }
     
     public void pizzaAuswahl(String pizzaGr) {
+    	System.out.println(pizzaGr);
     	initBestellung.getPizzen().add(new Pizza(KonstantInstanceSaver.getPizzaGroesse(pizzaGr)));
     	Preisberechnung.preisBerechnung(initBestellung.getPizzen().get(initBestellung.getPizzen().size()-1));
     	Preisberechnung.preisBerechnung(initBestellung);
@@ -324,6 +330,7 @@ public class KundenController implements Initializable  {
     	for(int i = 0; i < pizzen.size() ; i++){
     		ArrayList<Belag> belag = pizzen.get(i).getBelag();
     		System.out.println(pizzen.get(i).getBelag());
+    		System.out.println(pizzen.get(i).getPizzaGroesse().getGroesse());
     		TreeItem<TreeTableItem> pizza = new TreeItem<>(new TreeTableItem("Pizza "+pizzen.get(i).getPizzaGroesse().getGroesse(),pizzen.get(i).getPreis()));
     		for(int y = 0; y < belag.size(); y++) {
     			pizza.getChildren().add(new TreeItem<>(new TreeTableItem(belag.get(y).getName(),belag.get(y).getPreisL())));//TODO richtigen Preis für größe
@@ -334,7 +341,9 @@ public class KundenController implements Initializable  {
     	}
     	
     	for(int i = 0; i <initBestellung.getGetraenke().size(); i++){
-    		
+    		TreeItem<TreeTableItem> getraenk = new TreeItem<>(new TreeTableItem("Getränk "+ initBestellung.getGetraenke().get(i).getName(),initBestellung.getGetraenke().get(i).getPreis()));
+    		root.getChildren().add(getraenk);
+    		System.out.println(getraenk);
     	}
     } 
     
@@ -342,9 +351,32 @@ public class KundenController implements Initializable  {
     void neuePizza(MouseEvent event) {
 
     	pizzaGroesse.setVisible(true);
+    	pizzaGroesse.getSelectionModel().clearSelection();
+
 		bestellButtonsEinfach.setVisible(false);
     	bestellButtonsSpeziel.setVisible(false);
     	bestellGetraenke.setVisible(false);
     	neuePizza.setVisible(false);
+    }
+
+    @FXML
+    void bestellungAnlegen(MouseEvent event) {
+    	
+    	ArrayList<Pizza> pizzen = initBestellung.getPizzen();
+    	
+    	DAOFactory.getBestellungkDAO().insertBestellung(initBestellung);
+    	
+    	for(int i = 0; i < pizzen.size(); i++){
+    		DAOFactory.getPizzaDAO().insertPizza(pizzen.get(i), initBestellung.getId());
+    	}
+    	
+    	ArrayList<Getraenk> getraenke = initBestellung.getGetraenke();
+    	
+    	for(int i = 0; i < getraenke.size(); i++){
+    		DAOFactory.getGetraenkDAO().insertGetraenkBestellt(getraenke.get(i), initBestellung.getId());
+    	}
+    	
+    	
+    	
     }
 }
