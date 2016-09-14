@@ -40,7 +40,6 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.text.Font;
 import javafx.util.Callback;
 
 
@@ -106,6 +105,11 @@ public class KundenController implements Initializable  {
     private Button bestellungAnlegenButton;
     @FXML
     private Label kundenNameAnzeige;
+    @FXML
+    private Label labelGesamtAnzeige;
+    @FXML
+    private Label gesamtAnzeige;
+    
     
     TreeItem<TreeTableItem> root = new TreeItem<>();
 
@@ -115,6 +119,8 @@ public class KundenController implements Initializable  {
 		bestellungsAnzeige.setRoot(root);
 		bestellungsAnzeige.setShowRoot(false);
 		
+		labelGesamtAnzeige.setVisible(false);
+		gesamtAnzeige.setVisible(false);
 		kundenNameAnzeige.setVisible(false);
 		bestellungAnlegenButton.setVisible(false);
 		bestellungsAnzeige.setVisible(false);
@@ -299,6 +305,8 @@ public class KundenController implements Initializable  {
 		bestellungAnlegenButton.setVisible(true);
 		bestellungsAnzeige.setVisible(true);
 		kundenNameAnzeige.setVisible(true);
+		labelGesamtAnzeige.setVisible(true);
+		gesamtAnzeige.setVisible(true);
 		
 		kundenNameAnzeige.setText(initBestellung.getKunde().getName());
 		kundenNameAnzeige.setStyle("-fx-font: 30 arial;");

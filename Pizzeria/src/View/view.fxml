@@ -108,6 +108,8 @@
                   <Button fx:id="neuePizza" layoutX="288.0" layoutY="78.0" mnemonicParsing="false" onMouseClicked="#neuePizza" text="Neue Pizza" />
                   <Button fx:id="bestellungAnlegenButton" layoutX="1041.0" layoutY="770.0" mnemonicParsing="false" onMouseClicked="#bestellungAnlegen" text="Bestellung Abschicken" />
                   <Label fx:id="kundenNameAnzeige" alignment="CENTER" layoutX="450.0" layoutY="50.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="49.0" prefWidth="540.0" />
+                  <Label fx:id="labelGesamtAnzeige" layoutX="1233.0" layoutY="774.0" text="Gesamt" />
+                  <Label fx:id="gesamtAnzeige" layoutX="1329.0" layoutY="774.0" prefHeight="17.0" prefWidth="107.0" />
                </children></AnchorPane>
       </content>
     </Tab>
