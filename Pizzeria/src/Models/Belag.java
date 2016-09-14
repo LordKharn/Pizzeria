@@ -111,4 +111,15 @@ public class Belag {
 	public void setId(int id) {
 		this.id.set(id);;
 	}
+	
+	public double getPreis(String groesse){
+		switch(groesse){
+		case "Small":
+			return this.preisS.get();
+		case "Medium":
+			return this.preisM.get();
+		default:
+			return this.preisL.get();
+		}
+	}
 }
