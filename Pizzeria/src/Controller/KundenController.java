@@ -42,8 +42,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.util.Callback;
 
-
-
 public class KundenController implements Initializable  {
 	private Bestellung initBestellung = new Bestellung();
 	@FXML
@@ -110,7 +108,6 @@ public class KundenController implements Initializable  {
     @FXML
     private Label gesamtAnzeige;
     
-    
     TreeItem<TreeTableItem> root = new TreeItem<>();
 
 	@Override
@@ -153,7 +150,6 @@ public class KundenController implements Initializable  {
                         	neuePizza.setVisible(true);
                     	}
                     }
-                    
 		});
 		
 		Iterator<Getraenk> itG = KonstantInstanceSaver.getGetraenke().values().iterator();
@@ -263,22 +259,18 @@ public class KundenController implements Initializable  {
     
     @FXML
     void kundenOrtAnlegen(ActionEvent event) {
-
     }
 
     @FXML
     void kundenPlzAnlegen(ActionEvent event) {
-
     }
 
     @FXML
-    void kundenStrasseAnlegen(ActionEvent event) {
-    	
+    void kundenStrasseAnlegen(ActionEvent event) {  	
     }
 
     @FXML
-    void kundenNameAnlegen(ActionEvent event) {
-    	
+    void kundenNameAnlegen(ActionEvent event) { 	
     }
     
     @FXML
@@ -366,7 +358,7 @@ public class KundenController implements Initializable  {
     	}
     	
     	gesamtAnzeige.setText(Double.toString(initBestellung.getPreis()));
-    	
+    	gesamtAnzeige.setStyle("-fx-font-weight: bold;");
     } 
     
     @FXML
