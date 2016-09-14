@@ -30,7 +30,6 @@ public class Pizza {
 		this.id = new SimpleIntegerProperty(id);
 		this.groesse = groesse;
 		this.belag = belag;
-		this.preis.set(groesse.getPreis());
 	}
 
 	
@@ -38,7 +37,6 @@ public class Pizza {
 	public Pizza(PizzaGroesse groesse) {
 		this.belag = new ArrayList<Belag>();
 		this.groesse = groesse;
-		this.preis.set(groesse.getPreis());
 	}
 
 	/**
