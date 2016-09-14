@@ -8,7 +8,7 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 
 public class Pizza {
-	private IntegerProperty id;
+	private IntegerProperty id = new SimpleIntegerProperty(0);
 	private PizzaGroesse groesse;
 	private ArrayList<Belag> belag;
 	private DoubleProperty preis = new SimpleDoubleProperty(0);

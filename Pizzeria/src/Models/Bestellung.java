@@ -8,7 +8,7 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 
 public class Bestellung {
-	private IntegerProperty id;
+	private IntegerProperty id = new SimpleIntegerProperty(0) ;
 	private Kunde kunde;
 	private ArrayList<Pizza> pizzen;
 	private ArrayList<Getraenk> getraenke;
@@ -115,13 +115,13 @@ public class Bestellung {
 	 * @param preis the preis to set
 	 */
 	public void setPreis(double preis) {
-		this.preis.set(preis);;
+		this.preis.set(preis);
 	}
 	public int getId() {
 		return id.get();
 	}
 	public void setId(int id) {
-		this.id.set(id);;
+		this.id.set(id);
 	}
 
 	/* (non-Javadoc)

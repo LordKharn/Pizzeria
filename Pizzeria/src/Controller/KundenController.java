@@ -40,6 +40,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.text.Font;
 import javafx.util.Callback;
 
 
@@ -103,6 +104,8 @@ public class KundenController implements Initializable  {
     private Button neuePizza;
     @FXML
     private Button bestellungAnlegenButton;
+    @FXML
+    private Label kundenNameAnzeige;
     
     TreeItem<TreeTableItem> root = new TreeItem<>();
 
@@ -112,6 +115,11 @@ public class KundenController implements Initializable  {
 		bestellungsAnzeige.setRoot(root);
 		bestellungsAnzeige.setShowRoot(false);
 		
+		kundenNameAnzeige.setVisible(false);
+		bestellungAnlegenButton.setVisible(false);
+		bestellungsAnzeige.setVisible(false);
+		pizzaGroesse.setVisible(false);
+		labelPizzaAuswählen.setVisible(false);	
 		bestellButtonsEinfach.setVisible(false);
     	bestellButtonsSpeziel.setVisible(false);
     	bestellGetraenke.setVisible(false);
@@ -286,6 +294,14 @@ public class KundenController implements Initializable  {
     	initBestellung.setKunde(KundenTabelle.getItems().get(row));
     	
     	tabPane.getSelectionModel().select(bestellen);
+		pizzaGroesse.setVisible(true);
+		labelPizzaAuswählen.setVisible(true);	
+		bestellungAnlegenButton.setVisible(true);
+		bestellungsAnzeige.setVisible(true);
+		kundenNameAnzeige.setVisible(true);
+		
+		kundenNameAnzeige.setText(initBestellung.getKunde().getName());
+		kundenNameAnzeige.setStyle("-fx-font: 30 arial;");
     }   
 
     public void belagHinzufügen(int belagId) {	
@@ -302,7 +318,6 @@ public class KundenController implements Initializable  {
     }
     
     public void pizzaAuswahl(String pizzaGr) {
-    	System.out.println(pizzaGr);
     	initBestellung.getPizzen().add(new Pizza(KonstantInstanceSaver.getPizzaGroesse(pizzaGr)));
     	Preisberechnung.preisBerechnung(initBestellung.getPizzen().get(initBestellung.getPizzen().size()-1));
     	Preisberechnung.preisBerechnung(initBestellung);
@@ -329,12 +344,9 @@ public class KundenController implements Initializable  {
 		ArrayList<Pizza> pizzen = initBestellung.getPizzen();
     	for(int i = 0; i < pizzen.size() ; i++){
     		ArrayList<Belag> belag = pizzen.get(i).getBelag();
-    		System.out.println(pizzen.get(i).getBelag());
-    		System.out.println(pizzen.get(i).getPizzaGroesse().getGroesse());
     		TreeItem<TreeTableItem> pizza = new TreeItem<>(new TreeTableItem("Pizza "+pizzen.get(i).getPizzaGroesse().getGroesse(),pizzen.get(i).getPreis()));
     		for(int y = 0; y < belag.size(); y++) {
     			pizza.getChildren().add(new TreeItem<>(new TreeTableItem(belag.get(y).getName(),belag.get(y).getPreisL())));//TODO richtigen Preis für größe
-    			System.out.println(belag.get(y).getName());
     		}
     		pizza.setExpanded(true);
     		root.getChildren().add(pizza);
@@ -343,7 +355,6 @@ public class KundenController implements Initializable  {
     	for(int i = 0; i <initBestellung.getGetraenke().size(); i++){
     		TreeItem<TreeTableItem> getraenk = new TreeItem<>(new TreeTableItem("Getränk "+ initBestellung.getGetraenke().get(i).getName(),initBestellung.getGetraenke().get(i).getPreis()));
     		root.getChildren().add(getraenk);
-    		System.out.println(getraenk);
     	}
     } 
     
@@ -375,8 +386,5 @@ public class KundenController implements Initializable  {
     	for(int i = 0; i < getraenke.size(); i++){
     		DAOFactory.getGetraenkDAO().insertGetraenkBestellt(getraenke.get(i), initBestellung.getId());
     	}
-    	
-    	
-    	
     }
 }

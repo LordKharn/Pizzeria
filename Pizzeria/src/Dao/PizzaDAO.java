@@ -40,8 +40,6 @@ public class PizzaDAO {
 				sql2 += "(" + pizza.getId() + "," + pizza.getBelag().get(i).getId() + "),";
 			}
 			sql2 = sql2.substring(0, sql2.length()-1);
-
-			System.out.println(sql2);
 			
 			try{
 				PreparedStatement preStm = this.dbConnect.prepareStatement(sql2);
