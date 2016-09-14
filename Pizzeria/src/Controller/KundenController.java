@@ -313,9 +313,9 @@ public class KundenController implements Initializable  {
     }   
 
     public void belagHinzufügen(int belagId) {	
+    	initBestellung.getPizzen().get(initBestellung.getPizzen().size()-1).addBelag(KonstantInstanceSaver.getBelag(belagId));
     	Preisberechnung.preisBerechnung(initBestellung.getPizzen().get(initBestellung.getPizzen().size()-1));
     	Preisberechnung.preisBerechnung(initBestellung);
-    	initBestellung.getPizzen().get(initBestellung.getPizzen().size()-1).addBelag(KonstantInstanceSaver.getBelag(belagId));
     	aktualisierungBestellView();
     }
     
@@ -354,7 +354,7 @@ public class KundenController implements Initializable  {
     		ArrayList<Belag> belag = pizzen.get(i).getBelag();
     		TreeItem<TreeTableItem> pizza = new TreeItem<>(new TreeTableItem("Pizza "+pizzen.get(i).getPizzaGroesse().getGroesse(),pizzen.get(i).getPreis()));
     		for(int y = 0; y < belag.size(); y++) {
-    			pizza.getChildren().add(new TreeItem<>(new TreeTableItem(belag.get(y).getName(),belag.get(y).getPreisL())));//TODO richtigen Preis für größe
+    			pizza.getChildren().add(new TreeItem<>(new TreeTableItem(belag.get(y).getName(),belag.get(y).getPreis(pizzen.get(i).getPizzaGroesse().getGroesse()))));
     		}
     		pizza.setExpanded(true);
     		root.getChildren().add(pizza);
