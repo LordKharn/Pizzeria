@@ -23,9 +23,11 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
@@ -40,9 +42,13 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import javafx.util.Callback;
 
 public class KundenController implements Initializable  {
+	private Main mainApp;
 	private Bestellung initBestellung = new Bestellung();
 	@FXML
 	private TableView<Kunde> KundenTabelle;
@@ -88,7 +94,6 @@ public class KundenController implements Initializable  {
     private GridPane bestellButtonsSpeziel;
     @FXML
     private GridPane bestellGetraenke;
-	private Main mainApp;
     @FXML
     private TreeTableView<TreeTableItem> bestellungsAnzeige;
     @FXML
@@ -107,6 +112,8 @@ public class KundenController implements Initializable  {
     private Label labelGesamtAnzeige;
     @FXML
     private Label gesamtAnzeige;
+    @FXML
+    private GridPane neueBestellungen;
     
     TreeItem<TreeTableItem> root = new TreeItem<>();
 
@@ -224,6 +231,49 @@ public class KundenController implements Initializable  {
 			        });
 				bestellGetraenke.add(button,0,zeile);
 			}	
+		}
+		
+		ArrayList<Bestellung> bestellungen = new ArrayList<Bestellung>();
+		bestellungen.addAll(DAOFactory.getBestellungkDAO().neueBestellungen());
+
+		z = 0;
+		for(int spalte = 0; spalte < neueBestellungen.getColumnConstraints().size() ; spalte++) {
+			for(int zeile = 0; zeile < neueBestellungen.getRowConstraints().size() ; zeile++) {
+				
+				final int bestellId = bestellungen.get(z).getId();
+				ArrayList<Pizza> pizzen = new ArrayList<Pizza>();
+				pizzen.addAll(DAOFactory.getPizzaDAO().findPizza(bestellId));
+
+				ScrollPane  scrollPane = new ScrollPane();
+				scrollPane.setMaxWidth(600);
+				scrollPane.setMaxHeight(200);
+				String t = bestellungen.get(z).getKunde().getName() + "\n";
+
+				for(int x = 0 ; x < pizzen.size() ; x++){
+					t += "Pizza " + pizzen.get(x).getPizzaGroesse().getGroesse();
+					if(pizzen.get(x).getBelag() != null){
+						t += ": ";
+						for(int y = 0 ; y < pizzen.get(x).getBelag().size() ; y++){
+							t += pizzen.get(x).getBelag().get(y).getName() + ", ";
+						}
+						t = t.substring(0, t.length()-2);
+						t += "\n";
+					}
+				}
+
+				Text text = new Text(t);
+				text.setStyle("-fx-line-spacing: 0.3em;");
+				text.setFont(new Font(20));
+				scrollPane.setContent(text);
+				scrollPane.addEventFilter(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+			          @Override
+			          public void handle(MouseEvent e) {
+			        	  System.out.println(bestellId);
+			          }
+			        });
+				neueBestellungen.add(scrollPane,spalte,zeile);
+				z++;	
+			}
 		}
 	}
 	

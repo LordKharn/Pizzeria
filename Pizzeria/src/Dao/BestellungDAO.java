@@ -56,7 +56,7 @@ public class BestellungDAO {
 		}
 	}
 	public ArrayList<Bestellung> neueBestellungen(){
-		String sql="SELECT b.ID, k.KundenNr, k.Name, k.Strasse, k.Ort, k.Plz, b.Bonusgetraenk FROM bestellung b, kunde k WHERE Status ='Neu' AND b.KundenNr = k.KundenNr";
+		String sql="SELECT b.ID, k.KundenNr, k.Name, k.Strasse, k.Ort, k.Plz, b.Bonusgetraenk FROM bestellung b, kunde k, pizza p WHERE Status ='Neu' AND b.KundenNr = k.KundenNr AND p.Bestellungsid = b.ID GROUP BY b.id";
 		ArrayList<Bestellung> bestellung = new ArrayList<Bestellung>();
 		if(this.dbConnect != null){
 			try{
