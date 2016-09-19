@@ -42,8 +42,8 @@ public class BestellungDAO {
 		}
 	}
 	
-	public void updateBestellung(){
-		String sql="UPDATE bestellung SET Status='Fertig'";
+	public void updateBestellung(int bestellId){
+		String sql="UPDATE bestellung SET Status='Fertig' WHERE ID =" + bestellId;
 		if(this.dbConnect != null){
 			try{
 				PreparedStatement preStm = this.dbConnect.prepareStatement(sql);

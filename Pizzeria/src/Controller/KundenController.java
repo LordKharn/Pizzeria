@@ -4,6 +4,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import Backend.KonstantInstanceSaver;
 import Backend.Preisberechnung;
@@ -23,8 +24,10 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -44,7 +47,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
 import javafx.util.Callback;
 
 public class KundenController implements Initializable  {
@@ -85,6 +87,8 @@ public class KundenController implements Initializable  {
     @FXML
     private Tab bestellen;
     @FXML
+    private Tab kunde;
+    @FXML
     private TabPane tabPane;
     @FXML
     private ChoiceBox<String> pizzaGroesse;
@@ -115,6 +119,8 @@ public class KundenController implements Initializable  {
     @FXML
     private GridPane neueBestellungen;
     
+    private static final String titleTxt = "Status Update";
+    
     TreeItem<TreeTableItem> root = new TreeItem<>();
 
 	@Override
@@ -139,6 +145,7 @@ public class KundenController implements Initializable  {
 		KundenStrasse.setCellValueFactory(new PropertyValueFactory<Kunde, String>("strasse"));
 		KundenOrt.setCellValueFactory(new PropertyValueFactory<Kunde, String>("ort"));
 		KundenPlz.setCellValueFactory(new PropertyValueFactory<Kunde, Integer>("plz"));
+		kueche();
 		
 		ObservableList<String> pizzaGr = FXCollections.observableArrayList(KonstantInstanceSaver.getPizzaGroessen().keySet());
 		Collections.sort(pizzaGr);
@@ -232,49 +239,6 @@ public class KundenController implements Initializable  {
 				bestellGetraenke.add(button,0,zeile);
 			}	
 		}
-		
-		ArrayList<Bestellung> bestellungen = new ArrayList<Bestellung>();
-		bestellungen.addAll(DAOFactory.getBestellungkDAO().neueBestellungen());
-
-		z = 0;
-		for(int spalte = 0; spalte < neueBestellungen.getColumnConstraints().size() ; spalte++) {
-			for(int zeile = 0; zeile < neueBestellungen.getRowConstraints().size() ; zeile++) {
-				
-				final int bestellId = bestellungen.get(z).getId();
-				ArrayList<Pizza> pizzen = new ArrayList<Pizza>();
-				pizzen.addAll(DAOFactory.getPizzaDAO().findPizza(bestellId));
-
-				ScrollPane  scrollPane = new ScrollPane();
-				scrollPane.setMaxWidth(600);
-				scrollPane.setMaxHeight(200);
-				String t = bestellungen.get(z).getKunde().getName() + "\n";
-
-				for(int x = 0 ; x < pizzen.size() ; x++){
-					t += "Pizza " + pizzen.get(x).getPizzaGroesse().getGroesse();
-					if(pizzen.get(x).getBelag() != null){
-						t += ": ";
-						for(int y = 0 ; y < pizzen.get(x).getBelag().size() ; y++){
-							t += pizzen.get(x).getBelag().get(y).getName() + ", ";
-						}
-						t = t.substring(0, t.length()-2);
-						t += "\n";
-					}
-				}
-
-				Text text = new Text(t);
-				text.setStyle("-fx-line-spacing: 0.3em;");
-				text.setFont(new Font(20));
-				scrollPane.setContent(text);
-				scrollPane.addEventFilter(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
-			          @Override
-			          public void handle(MouseEvent e) {
-			        	  System.out.println(bestellId);
-			          }
-			        });
-				neueBestellungen.add(scrollPane,spalte,zeile);
-				z++;	
-			}
-		}
 	}
 	
 	@FXML
@@ -332,7 +296,6 @@ public class KundenController implements Initializable  {
 				kundenStrasseAnlegen.clear();
 				kundenPlzAnlegen.clear();
 			} catch (NumberFormatException e) {
-				System.out.println("geht nicht !");
 		}
     }
     
@@ -413,7 +376,7 @@ public class KundenController implements Initializable  {
     
     @FXML
     void neuePizza(MouseEvent event) {
-
+    	
     	pizzaGroesse.setVisible(true);
     	pizzaGroesse.getSelectionModel().clearSelection();
 
@@ -439,5 +402,81 @@ public class KundenController implements Initializable  {
     	for(int i = 0; i < getraenke.size(); i++){
     		DAOFactory.getGetraenkDAO().insertGetraenkBestellt(getraenke.get(i), initBestellung.getId());
     	}
+    	
+    	initBestellung = new Bestellung();
+    	bestellungsAnzeige.setRoot(null);
+    	pizzaGroesse.getSelectionModel().clearSelection();
+    	labelGesamtAnzeige.setVisible(false);
+		gesamtAnzeige.setVisible(false);
+		kundenNameAnzeige.setVisible(false);
+		bestellungAnlegenButton.setVisible(false);
+		bestellungsAnzeige.setVisible(false);
+		pizzaGroesse.setVisible(false);
+		labelPizzaAuswählen.setVisible(false);	
+		bestellButtonsEinfach.setVisible(false);
+    	bestellButtonsSpeziel.setVisible(false);
+    	bestellGetraenke.setVisible(false);
+    	neuePizza.setVisible(false);
+    	tabPane.getSelectionModel().select(kunde);
+    }
+    
+    public void kueche(){
+    	
+		ArrayList<Bestellung> bestellungen = new ArrayList<Bestellung>();
+		bestellungen.addAll(DAOFactory.getBestellungkDAO().neueBestellungen());
+
+		int z = 0;
+		for(int spalte = 0; spalte < neueBestellungen.getColumnConstraints().size() ; spalte++) {
+			for(int zeile = 0; zeile < neueBestellungen.getRowConstraints().size() ; zeile++) {
+				try {
+					final int bestellId = bestellungen.get(z).getId();
+					ArrayList<Pizza> pizzen = new ArrayList<Pizza>();
+					pizzen.addAll(DAOFactory.getPizzaDAO().findPizza(bestellId));
+					
+					ScrollPane scrollPane;
+					scrollPane = new ScrollPane();
+					scrollPane.setMaxWidth(600);
+					scrollPane.setMaxHeight(200);
+					String t = bestellungen.get(z).getKunde().getName() + "\n";
+
+					for(int x = 0 ; x < pizzen.size() ; x++){
+						t += "Pizza " + pizzen.get(x).getPizzaGroesse().getGroesse();
+						if(pizzen.get(x).getBelag() != null){
+							t += ": ";
+							for(int y = 0 ; y < pizzen.get(x).getBelag().size() ; y++){
+								t += pizzen.get(x).getBelag().get(y).getName() + ", ";
+							}
+							t = t.substring(0, t.length()-2);
+							t += "\n";
+						}
+					} 
+
+					Text text = new Text(t);
+					text.setStyle("-fx-line-spacing: 0.3em;");
+					text.setFont(new Font(20));
+					scrollPane.setContent(text);
+					scrollPane.addEventFilter(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+					      @Override
+					      public void handle(MouseEvent e) {
+					    	  Alert alert = new Alert(AlertType.CONFIRMATION);
+					    	  alert.setTitle(titleTxt);
+					    	  String s = "Alles Fertig ?";
+					    	  alert.setContentText(s);
+					    	  
+					    	  Optional<ButtonType> result = alert.showAndWait();
+					    	  
+					    	  if ((result.isPresent()) && (result.get() == ButtonType.OK)) {
+					    		  DAOFactory.getBestellungkDAO().updateBestellung(bestellId);
+					    		  kueche();
+					    	  }
+					      }
+					    });
+					neueBestellungen.add(scrollPane,spalte,zeile);
+					z++;
+				} catch (Exception e) {
+
+				}
+			}
+		}
     }
 }
