@@ -45,6 +45,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.util.Callback;
@@ -118,6 +119,16 @@ public class KundenController implements Initializable  {
     private Label gesamtAnzeige;
     @FXML
     private GridPane neueBestellungen;
+    @FXML
+    private Tab kasse;
+    @FXML
+    private ScrollPane kundeAnzeigeKasse;
+    @FXML
+    private Pane belegKunde;
+    @FXML
+    private Pane belegFirma;
+    @FXML
+    private Button print;
     
     private static final String titleTxt = "Status Update";
     
@@ -484,5 +495,9 @@ public class KundenController implements Initializable  {
 				}
 			}
 		}
+    }
+    
+    public void kasse(){
+    	
     }
 }

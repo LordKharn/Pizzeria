@@ -55,8 +55,47 @@ public class BestellungDAO {
 			}
 		}
 	}
+	
+	public void updateFertigBestellung(int bestellId){
+		String sql="UPDATE bestellung SET Status='Abgeschlossen' WHERE ID =" + bestellId;
+		if(this.dbConnect != null){
+			try{
+				PreparedStatement preStm = this.dbConnect.prepareStatement(sql);
+				preStm.executeUpdate();
+				preStm.close();
+			}
+			catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
 	public ArrayList<Bestellung> neueBestellungen(){
 		String sql="SELECT b.ID, k.KundenNr, k.Name, k.Strasse, k.Ort, k.Plz, b.Bonusgetraenk FROM bestellung b, kunde k, pizza p WHERE Status ='Neu' AND b.KundenNr = k.KundenNr AND p.Bestellungsid = b.ID GROUP BY b.id";
+		ArrayList<Bestellung> bestellung = new ArrayList<Bestellung>();
+		if(this.dbConnect != null){
+			try{
+				PreparedStatement preStm = this.dbConnect.prepareStatement(sql);
+				ResultSet rs = preStm.executeQuery();
+				while(rs.next()){
+					if(rs.getInt(7) != 0){
+						bestellung.add(new Bestellung(rs.getInt(1), new Kunde(rs.getInt(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getInt(6)), KonstantInstanceSaver.getGetraenk(rs.getInt(7))));
+					}
+					else {	
+						bestellung.add(new Bestellung(rs.getInt(1), new Kunde(rs.getInt(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getInt(6))));
+					}
+				}
+				preStm.close();
+			}
+			catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}	
+		return bestellung;
+	}
+	
+	public ArrayList<Bestellung> fertigBestellungen(){
+		String sql="SELECT b.ID, k.KundenNr, k.Name, k.Strasse, k.Ort, k.Plz, b.Bonusgetraenk FROM bestellung b, kunde k, pizza p WHERE Status ='Fertig' AND b.KundenNr = k.KundenNr AND p.Bestellungsid = b.ID GROUP BY b.id";
 		ArrayList<Bestellung> bestellung = new ArrayList<Bestellung>();
 		if(this.dbConnect != null){
 			try{
