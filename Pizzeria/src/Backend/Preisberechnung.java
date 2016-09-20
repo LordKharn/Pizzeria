@@ -61,4 +61,12 @@ public class Preisberechnung {
 		}
 		bestellung.setPreis(gesamtpreis);
 	}
+	
+	public static void komplettPreisBerechnung(Bestellung bestellung){
+		ArrayList<Pizza> pizzen = bestellung.getPizzen();
+		for(int i = 0; i < pizzen.size(); i++){
+			preisBerechnung(pizzen.get(i));
+		}
+		preisBerechnung(bestellung);
+	}
 }
