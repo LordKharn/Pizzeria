@@ -34,7 +34,7 @@ public class PizzaDAO {
 			catch (SQLException e) {
 				e.printStackTrace();
 			}
-			if(pizza.getBelag().size() == 0){
+			if(pizza.getBelag().size() != 0){
 				String sql2 = "INSERT INTO pizzabelag (PizzaID,BelagID) VALUES ";
 				for(int i = 0; i < pizza.getBelag().size(); i++){
 					sql2 += "(" + pizza.getId() + "," + pizza.getBelag().get(i).getId() + "),";

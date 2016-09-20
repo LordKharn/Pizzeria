@@ -31,8 +31,6 @@ public class Pizza {
 		this.groesse = groesse;
 		this.belag = belag;
 	}
-
-	
 	
 	public Pizza(PizzaGroesse groesse) {
 		this.belag = new ArrayList<Belag>();

@@ -391,6 +391,7 @@ public class KundenController implements Initializable  {
     	
     	ArrayList<Pizza> pizzen = initBestellung.getPizzen();
     	
+    	
     	DAOFactory.getBestellungkDAO().insertBestellung(initBestellung);
     	
     	for(int i = 0; i < pizzen.size(); i++){
@@ -403,6 +404,7 @@ public class KundenController implements Initializable  {
     		DAOFactory.getGetraenkDAO().insertGetraenkBestellt(getraenke.get(i), initBestellung.getId());
     	}
     	
+    	kueche();
     	initBestellung = new Bestellung();
     	bestellungsAnzeige.setRoot(null);
     	pizzaGroesse.getSelectionModel().clearSelection();
@@ -418,6 +420,7 @@ public class KundenController implements Initializable  {
     	bestellGetraenke.setVisible(false);
     	neuePizza.setVisible(false);
     	tabPane.getSelectionModel().select(kunde);
+
     }
     
     public void kueche(){
@@ -430,6 +433,7 @@ public class KundenController implements Initializable  {
 			for(int zeile = 0; zeile < neueBestellungen.getRowConstraints().size() ; zeile++) {
 				try {
 					final int bestellId = bestellungen.get(z).getId();
+					
 					ArrayList<Pizza> pizzen = new ArrayList<Pizza>();
 					pizzen.addAll(DAOFactory.getPizzaDAO().findPizza(bestellId));
 					
@@ -437,6 +441,7 @@ public class KundenController implements Initializable  {
 					scrollPane = new ScrollPane();
 					scrollPane.setMaxWidth(600);
 					scrollPane.setMaxHeight(200);
+					
 					String t = bestellungen.get(z).getKunde().getName() + "\n";
 
 					for(int x = 0 ; x < pizzen.size() ; x++){
@@ -450,7 +455,7 @@ public class KundenController implements Initializable  {
 							t += "\n";
 						}
 					} 
-
+						
 					Text text = new Text(t);
 					text.setStyle("-fx-line-spacing: 0.3em;");
 					text.setFont(new Font(20));
@@ -467,6 +472,7 @@ public class KundenController implements Initializable  {
 					    	  
 					    	  if ((result.isPresent()) && (result.get() == ButtonType.OK)) {
 					    		  DAOFactory.getBestellungkDAO().updateBestellung(bestellId);
+					    		  neueBestellungen.getChildren().clear();
 					    		  kueche();
 					    	  }
 					      }
