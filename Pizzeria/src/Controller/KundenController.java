@@ -24,6 +24,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
@@ -122,7 +123,7 @@ public class KundenController implements Initializable  {
     @FXML
     private Tab kasse;
     @FXML
-    private ScrollPane kundeAnzeigeKasse;
+    private GridPane kundeAnzeigeKasse;
     @FXML
     private Pane belegKunde;
     @FXML
@@ -157,6 +158,7 @@ public class KundenController implements Initializable  {
 		KundenOrt.setCellValueFactory(new PropertyValueFactory<Kunde, String>("ort"));
 		KundenPlz.setCellValueFactory(new PropertyValueFactory<Kunde, Integer>("plz"));
 		kueche();
+		kasse();
 		
 		ObservableList<String> pizzaGr = FXCollections.observableArrayList(KonstantInstanceSaver.getPizzaGroessen().keySet());
 		Collections.sort(pizzaGr);
@@ -499,5 +501,43 @@ public class KundenController implements Initializable  {
     
     public void kasse(){
     	
+    	ArrayList<Bestellung> bestellungen = new ArrayList<Bestellung>();
+		bestellungen.addAll(DAOFactory.getBestellungkDAO().fertigBestellungen());
+
+		for(int z = 0 ; z < kundeAnzeigeKasse.getColumnConstraints().size(); z++){
+			for(int i = 0 ; i < bestellungen.size() ; i++){
+				System.out.println(i);
+				
+				int bestellId = bestellungen.get(i).getId();
+				
+				Button button = new Button(bestellungen.get(i).getKunde().getName());
+	
+				button.setMaxWidth(bestellungen.get(i).getKunde().getName().length()*10);
+				button.setMaxHeight(50);
+				button.setAlignment(Pos.CENTER);
+				button.addEventFilter(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+			          @Override
+			          public void handle(MouseEvent e) {
+			        	  belegKunde(bestellId);
+			          }
+			        });
+				kundeAnzeigeKasse.add(button, z, 0);
+			}
+		}
+		
+		
+		
+		
+		for(int i = 0 ; i < bestellungen.size() ; i++){
+			int bestellId = bestellungen.get(i).getId();
+			
+			ArrayList<Pizza> pizzen = new ArrayList<Pizza>();
+			pizzen.addAll(DAOFactory.getPizzaDAO().findPizza(bestellId));
+
+		}
+    }
+    
+    public void belegKunde(int bestellId){
+    	System.out.println(bestellId);
     }
 }
