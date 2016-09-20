@@ -121,6 +121,10 @@ public class KundenController implements Initializable  {
     @FXML
     private GridPane neueBestellungen;
     @FXML
+    private Label bonusGetraenkLabel;
+    @FXML
+    private ChoiceBox<Getraenk> bonusGetraenkAuswahl;
+    @FXML
     private Tab kasse;
     @FXML
     private GridPane kundeAnzeigeKasse;
@@ -140,6 +144,9 @@ public class KundenController implements Initializable  {
 		root.setExpanded(true);
 		bestellungsAnzeige.setRoot(root);
 		bestellungsAnzeige.setShowRoot(false);
+		
+		bonusGetraenkLabel.setVisible(false);
+		bonusGetraenkAuswahl.setVisible(false);
 		
 		labelGesamtAnzeige.setVisible(false);
 		gesamtAnzeige.setVisible(false);
@@ -166,17 +173,23 @@ public class KundenController implements Initializable  {
 		pizzaGroesse.setItems(pizzaGr);
 
 		pizzaGroesse.valueProperty().addListener(new ChangeListener<String>() {
-                    @Override public void changed(ObservableValue ov, String t, String pizzaGr) {
-                    	if (pizzaGr != null){
-                    		pizzaAuswahl(pizzaGr);
-                        	bestellButtonsEinfach.setVisible(true);
-                        	bestellButtonsSpeziel.setVisible(true);
-                        	bestellGetraenke.setVisible(true);
-                        	pizzaGroesse.setVisible(false);
-                        	labelPizzaAuswählen.setVisible(false);
-                        	neuePizza.setVisible(true);
-                    	}
-                    }
+            @Override public void changed(ObservableValue ov, String t, String pizzaGr) {
+            	if (pizzaGr != null){
+            		pizzaAuswahl(pizzaGr);
+                	bestellButtonsEinfach.setVisible(true);
+                	bestellButtonsSpeziel.setVisible(true);
+                	bestellGetraenke.setVisible(true);
+                	pizzaGroesse.setVisible(false);
+                	labelPizzaAuswählen.setVisible(false);
+                	neuePizza.setVisible(true);
+            	}
+            }
+		});
+		
+		bonusGetraenkAuswahl.valueProperty().addListener(new ChangeListener<Getraenk>() {
+			@Override public void changed(ObservableValue arg0, Getraenk arg1, Getraenk arg2) {
+				initBestellung.setBonusGetraenke(arg2);
+			}
 		});
 		
 		Iterator<Getraenk> itG = KonstantInstanceSaver.getGetraenke().values().iterator();
@@ -385,6 +398,26 @@ public class KundenController implements Initializable  {
     	
     	gesamtAnzeige.setText(Double.toString(initBestellung.getPreis()));
     	gesamtAnzeige.setStyle("-fx-font-weight: bold;");
+    	
+    	//bonusgetraenk
+    	if(initBestellung.getPreis() >= 20){
+    		bonusGetraenkLabel.setVisible(true);
+    		bonusGetraenkAuswahl.setVisible(true);
+    		ArrayList<Getraenk> getraenke = new ArrayList<Getraenk>(KonstantInstanceSaver.getGetraenke().values());
+    		ArrayList<Getraenk> bonusgetraenke = new ArrayList<Getraenk>();
+    		for(int i = 0; i < getraenke.size(); i++){
+        		if(initBestellung.getPreis() >= 40){
+        			if(getraenke.get(i).getPreis() >= 10){
+        				bonusgetraenke.add(getraenke.get(i));
+        			}
+        		}else{
+        			if(getraenke.get(i).getPreis() < 10){
+        				bonusgetraenke.add(getraenke.get(i));
+        			}
+        		}
+    		}
+    		bonusGetraenkAuswahl.setItems(FXCollections.observableArrayList(bonusgetraenke));
+    	}
     } 
     
     @FXML
