@@ -56,4 +56,7 @@ public class Getraenk {
 	public void setPreis(double preis) {
 		this.preis.set(preis);;
 	}
+	public String toString(){
+		return this.name.get();
+	}
 }
