@@ -36,7 +36,6 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
@@ -136,7 +135,6 @@ public class KundenController implements Initializable  {
     private Label bonusGetraenkLabel;
     @FXML
     private Button bestellungAnlegenButton;
-
     
     //KüchenTab
     @FXML
@@ -150,9 +148,9 @@ public class KundenController implements Initializable  {
     @FXML
     private GridPane kundeAnzeigeKasse;
     @FXML
-    private TextArea belegKunde;
+    private Label belegKunde;
     @FXML
-    private TextArea belegFirma;
+    private Label belegFirma;
     @FXML
     private GridPane print;
 
@@ -183,215 +181,7 @@ public class KundenController implements Initializable  {
 		KundenPlz.setCellValueFactory(new PropertyValueFactory<Kunde, Integer>("plz"));
 		kueche();
 		kasse();
-	}
-	
-	@FXML
-	void listAllKunden(ActionEvent event){
-		KundenTabelle.setItems(mainApp.getKunden());
-	}
-
-	public void setMainApp(Main mainApp) {
-		this.mainApp = mainApp;
-	}
-
-    @FXML
-    void sucheKundeButton(ActionEvent event) {
-    	try {
-			if(!sucheKunde.getText().isEmpty()) {
-				KundenTabelle.setItems(mainApp.getKunde(Integer.parseInt(sucheKunde.getText())));
-			}
-			else {
-
-			}
-		} 
-    	catch (NumberFormatException e) 
-    	{
-
-		}
-    }
-
-    @FXML
-    void sucheKundeName(KeyEvent event) {
-    	KundenTabelle.setItems(mainApp.getKunde(sucheKundeName.getText()));
-    }
-    
-    @FXML
-    void kundenOrtAnlegen(ActionEvent event) {
-    }
-
-    @FXML
-    void kundenPlzAnlegen(ActionEvent event) {
-    }
-
-    @FXML
-    void kundenStrasseAnlegen(ActionEvent event) {  	
-    }
-
-    @FXML
-    void kundenNameAnlegen(ActionEvent event) { 	
-    }
-    
-    @FXML
-    void kundenAnlegen(ActionEvent event) {
-    	try {
-				DAOFactory.getKundeDAO().insertKunde(new Kunde(kundenNameAnlegen.getText(), kundenStrasseAnlegen.getText(), kundenOrtAnlegen.getText(), Integer.parseInt(kundenPlzAnlegen.getText())));
-				kundenNameAnlegen.clear();
-				kundenOrtAnlegen.clear();
-				kundenStrasseAnlegen.clear();
-				kundenPlzAnlegen.clear();
-			} catch (NumberFormatException e) {
-		}
-    }
-    
-    @FXML
-    void neueBestellungMitKunde(MouseEvent event) {    	
-    	int row = KundenTabelle.getSelectionModel().getSelectedCells().get(0).getRow();
-    	initBestellung.setKunde(KundenTabelle.getItems().get(row));
-    	
-    	tabPane.getSelectionModel().select(bestellen);
-    	
-		pizzaGroesse.setVisible(true);
-		labelPizzaAuswählen.setVisible(true);	
-		bestellungAnlegenButton.setVisible(true);
-		bestellungsAnzeige.setVisible(true);
-		kundenNameAnzeige.setVisible(true);
-		labelGesamtAnzeige.setVisible(true);
-		gesamtAnzeige.setVisible(true);
-		bestellen();
 		
-		kundenNameAnzeige.setText(initBestellung.getKunde().getName());
-		kundenNameAnzeige.setStyle("-fx-font: 30 arial;");
-    }   
-
-    public void belagHinzufügen(int belagId) {	
-    	initBestellung.getPizzen().get(initBestellung.getPizzen().size()-1).addBelag(KonstantInstanceSaver.getBelag(belagId));
-    	Preisberechnung.preisBerechnung(initBestellung.getPizzen().get(initBestellung.getPizzen().size()-1));
-    	Preisberechnung.preisBerechnung(initBestellung);
-    	aktualisierungBestellView();
-    }
-    
-    public void getraenkHinzufügen(int getraenkId) {
-    	initBestellung.getGetraenke().add(KonstantInstanceSaver.getGetraenk(getraenkId));
-    	Preisberechnung.preisBerechnung(initBestellung);
-    	aktualisierungBestellView();
-    }
-    
-    public void pizzaAuswahl(String pizzaGr) {
-    	initBestellung.getPizzen().add(new Pizza(KonstantInstanceSaver.getPizzaGroesse(pizzaGr)));
-    	Preisberechnung.preisBerechnung(initBestellung.getPizzen().get(initBestellung.getPizzen().size()-1));
-    	Preisberechnung.preisBerechnung(initBestellung);
-    	aktualisierungBestellView();
-
-    }
-    
-    public void aktualisierungBestellView(){
-        TreeItem<TreeTableItem> root = new TreeItem<>();
-    	root.setExpanded(true);
-		bestellungsAnzeige.setRoot(root);
-		bestellungsAnzeige.setShowRoot(false);
-
-    	bestellung.setCellValueFactory((CellDataFeatures<TreeTableItem, String> param) -> 
-        new ReadOnlyStringWrapper(param.getValue().getValue().getName()));
-    	
-    	Preis.setCellValueFactory(new Callback<CellDataFeatures<TreeTableItem, Double>, ObservableValue<Double>>(){
-    		@Override
-    		public ObservableValue<Double> call(CellDataFeatures<TreeTableItem,Double> param2){
-    			return param2.getValue().getValue().getPreisProperty().asObject();
-    		}
-    	});
-    	
-		ArrayList<Pizza> pizzen = initBestellung.getPizzen();
-    	for(int i = 0; i < pizzen.size() ; i++){
-    		ArrayList<Belag> belag = pizzen.get(i).getBelag();
-    		TreeItem<TreeTableItem> pizza = new TreeItem<>(new TreeTableItem("Pizza "+pizzen.get(i).getPizzaGroesse().getGroesse(),pizzen.get(i).getPreis()));
-    		for(int y = 0; y < belag.size(); y++) {
-    			pizza.getChildren().add(new TreeItem<>(new TreeTableItem(belag.get(y).getName(),belag.get(y).getPreis(pizzen.get(i).getPizzaGroesse().getGroesse()))));
-    		}
-    		pizza.setExpanded(true);
-    		root.getChildren().add(pizza);
-    	}
-    	
-    	for(int i = 0; i <initBestellung.getGetraenke().size(); i++){
-    		TreeItem<TreeTableItem> getraenk = new TreeItem<>(new TreeTableItem("Getränk "+ initBestellung.getGetraenke().get(i).getName(),initBestellung.getGetraenke().get(i).getPreis()));
-    		root.getChildren().add(getraenk);
-    	}
-    	
-    	gesamtAnzeige.setText(Double.toString(initBestellung.getPreis()));
-    	gesamtAnzeige.setStyle("-fx-font-weight: bold;");
-    	
-    	//bonusgetraenk
-    	if(initBestellung.getPreis() >= 20){
-    		bonusGetraenkLabel.setVisible(true);
-    		bonusGetraenkAuswahl.setVisible(true);
-    		ArrayList<Getraenk> getraenke = new ArrayList<Getraenk>(KonstantInstanceSaver.getGetraenke().values());
-    		ArrayList<Getraenk> bonusgetraenke = new ArrayList<Getraenk>();
-    		for(int i = 0; i < getraenke.size(); i++){
-        		if(initBestellung.getPreis() >= 40){
-        			if(getraenke.get(i).getPreis() >= 10){
-        				bonusgetraenke.add(getraenke.get(i));
-        			}
-        		}else{
-        			if(getraenke.get(i).getPreis() < 10){
-        				bonusgetraenke.add(getraenke.get(i));
-        			}
-        		}
-    		}
-    		bonusGetraenkAuswahl.setItems(FXCollections.observableArrayList(bonusgetraenke));
-    	}
-    } 
-    
-    @FXML
-    void neuePizza(MouseEvent event) {
-    	
-    	pizzaGroesse.setVisible(true);
-    	pizzaGroesse.getSelectionModel().clearSelection();
-
-		bestellButtonsEinfach.setVisible(false);
-    	bestellButtonsSpeziel.setVisible(false);
-    	bestellGetraenke.setVisible(false);
-    	neuePizza.setVisible(false);
-    }
-
-    @FXML
-    void bestellungAnlegen(MouseEvent event) {
-    	
-    	ArrayList<Pizza> pizzen = initBestellung.getPizzen();
-    	
-    	
-    	DAOFactory.getBestellungkDAO().insertBestellung(initBestellung);
-    	
-    	for(int i = 0; i < pizzen.size(); i++){
-    		DAOFactory.getPizzaDAO().insertPizza(pizzen.get(i), initBestellung.getId());
-    	}
-    	
-    	ArrayList<Getraenk> getraenke = initBestellung.getGetraenke();
-    	
-    	for(int i = 0; i < getraenke.size(); i++){
-    		DAOFactory.getGetraenkDAO().insertGetraenkBestellt(getraenke.get(i), initBestellung.getId());
-    	}
-    	
-    	kueche();
-		bonusGetraenkLabel.setVisible(false);
-		bonusGetraenkAuswahl.setVisible(false);
-    	initBestellung = new Bestellung();
-    	bestellungsAnzeige.setRoot(null);
-    	pizzaGroesse.getSelectionModel().clearSelection();
-    	labelGesamtAnzeige.setVisible(false);
-		gesamtAnzeige.setVisible(false);
-		kundenNameAnzeige.setVisible(false);
-		bestellungAnlegenButton.setVisible(false);
-		bestellungsAnzeige.setVisible(false);
-		pizzaGroesse.setVisible(false);
-		labelPizzaAuswählen.setVisible(false);	
-		bestellButtonsEinfach.setVisible(false);
-    	bestellButtonsSpeziel.setVisible(false);
-    	bestellGetraenke.setVisible(false);
-    	neuePizza.setVisible(false);
-    	tabPane.getSelectionModel().select(kunde);
-
-    }
-    
-    public void bestellen(){
 		ObservableList<String> pizzaGr = FXCollections.observableArrayList(KonstantInstanceSaver.getPizzaGroessen().keySet());
 		Collections.sort(pizzaGr);
 		Collections.reverse(pizzaGr);
@@ -490,8 +280,214 @@ public class KundenController implements Initializable  {
 				bestellGetraenke.add(button,0,zeile);
 			}	
 		}
+	}
+	
+	@FXML
+	void listAllKunden(ActionEvent event){
+		KundenTabelle.setItems(mainApp.getKunden());
+	}
+
+	public void setMainApp(Main mainApp) {
+		this.mainApp = mainApp;
+	}
+
+    @FXML
+    void sucheKundeButton(ActionEvent event) {
+    	try {
+			if(!sucheKunde.getText().isEmpty()) {
+				KundenTabelle.setItems(mainApp.getKunde(Integer.parseInt(sucheKunde.getText())));
+			}
+			else {
+			}
+		} 
+    	catch (NumberFormatException e) 
+    	{
+		}
+    }
+
+    @FXML
+    void sucheKundeName(KeyEvent event) {
+    	KundenTabelle.setItems(mainApp.getKunde(sucheKundeName.getText()));
     }
     
+    @FXML
+    void kundenOrtAnlegen(ActionEvent event) {
+    }
+
+    @FXML
+    void kundenPlzAnlegen(ActionEvent event) {
+    }
+
+    @FXML
+    void kundenStrasseAnlegen(ActionEvent event) {  	
+    }
+
+    @FXML
+    void kundenNameAnlegen(ActionEvent event) { 
+    }
+ 
+    @FXML
+    void kundenAnlegen(ActionEvent event) {
+    	try {
+				DAOFactory.getKundeDAO().insertKunde(new Kunde(kundenNameAnlegen.getText(), kundenStrasseAnlegen.getText(), kundenOrtAnlegen.getText(), Integer.parseInt(kundenPlzAnlegen.getText())));
+				kundenNameAnlegen.clear();
+				kundenOrtAnlegen.clear();
+				kundenStrasseAnlegen.clear();
+				kundenPlzAnlegen.clear();
+			} catch (NumberFormatException e) {
+		}
+    }
+    
+    @FXML
+    void neueBestellungMitKunde(MouseEvent event) {
+    	int row = KundenTabelle.getSelectionModel().getSelectedCells().get(0).getRow();
+    	initBestellung.setKunde(KundenTabelle.getItems().get(row));
+    	
+    	tabPane.getSelectionModel().select(bestellen);
+    	
+    	pizzaGroesse.setVisible(true);
+		labelPizzaAuswählen.setVisible(true);	
+		bestellungAnlegenButton.setVisible(true);
+		bestellungsAnzeige.setVisible(true);
+		kundenNameAnzeige.setVisible(true);
+		labelGesamtAnzeige.setVisible(true);
+		gesamtAnzeige.setVisible(true);
+		
+		kundenNameAnzeige.setText(initBestellung.getKunde().getName());
+		kundenNameAnzeige.setStyle("-fx-font: 30 arial;");
+    }   
+
+    public void belagHinzufügen(int belagId) {	
+    	initBestellung.getPizzen().get(initBestellung.getPizzen().size()-1).addBelag(KonstantInstanceSaver.getBelag(belagId));
+    	Preisberechnung.preisBerechnung(initBestellung.getPizzen().get(initBestellung.getPizzen().size()-1));
+    	Preisberechnung.preisBerechnung(initBestellung);
+    	aktualisierungBestellView();
+    }
+    
+    public void getraenkHinzufügen(int getraenkId) {
+    	initBestellung.getGetraenke().add(KonstantInstanceSaver.getGetraenk(getraenkId));
+    	Preisberechnung.preisBerechnung(initBestellung);
+    	aktualisierungBestellView();
+    }
+    
+    public void pizzaAuswahl(String pizzaGr) {
+    	initBestellung.getPizzen().add(new Pizza(KonstantInstanceSaver.getPizzaGroesse(pizzaGr)));
+    	Preisberechnung.preisBerechnung(initBestellung.getPizzen().get(initBestellung.getPizzen().size()-1));
+    	Preisberechnung.preisBerechnung(initBestellung);
+    	aktualisierungBestellView();
+    }
+    
+    public void aktualisierungBestellView(){
+        TreeItem<TreeTableItem> root = new TreeItem<>();
+    	root.setExpanded(true);
+		bestellungsAnzeige.setRoot(root);
+		bestellungsAnzeige.setShowRoot(false);
+
+    	bestellung.setCellValueFactory((CellDataFeatures<TreeTableItem, String> param) -> 
+        new ReadOnlyStringWrapper(param.getValue().getValue().getName()));
+    	
+    	Preis.setCellValueFactory(new Callback<CellDataFeatures<TreeTableItem, Double>, ObservableValue<Double>>(){
+    		@Override
+    		public ObservableValue<Double> call(CellDataFeatures<TreeTableItem,Double> param2){
+    			return param2.getValue().getValue().getPreisProperty().asObject();
+    		}
+    	});
+    	
+		ArrayList<Pizza> pizzen = initBestellung.getPizzen();
+    	for(int i = 0; i < pizzen.size() ; i++){
+    		ArrayList<Belag> belag = pizzen.get(i).getBelag();
+    		TreeItem<TreeTableItem> pizza = new TreeItem<>(new TreeTableItem("Pizza "+pizzen.get(i).getPizzaGroesse().getGroesse(),pizzen.get(i).getPreis()));
+    		for(int y = 0; y < belag.size(); y++) {
+    			pizza.getChildren().add(new TreeItem<>(new TreeTableItem(belag.get(y).getName(),belag.get(y).getPreis(pizzen.get(i).getPizzaGroesse().getGroesse()))));
+    		}
+    		pizza.setExpanded(true);
+    		root.getChildren().add(pizza);
+    	}
+    	
+    	for(int i = 0; i <initBestellung.getGetraenke().size(); i++){
+    		TreeItem<TreeTableItem> getraenk = new TreeItem<>(new TreeTableItem("Getränk "+ initBestellung.getGetraenke().get(i).getName(),initBestellung.getGetraenke().get(i).getPreis()));
+    		root.getChildren().add(getraenk);
+    	}
+    	
+    	gesamtAnzeige.setText(Double.toString(initBestellung.getPreis()));
+    	gesamtAnzeige.setStyle("-fx-font-weight: bold;");
+    	
+    	//bonusgetraenk
+    	if(initBestellung.getPreis() >= 20){
+    		bonusGetraenkLabel.setVisible(true);
+    		bonusGetraenkAuswahl.setVisible(true);
+    		ArrayList<Getraenk> getraenke = new ArrayList<Getraenk>(KonstantInstanceSaver.getGetraenke().values());
+    		ArrayList<Getraenk> bonusgetraenke = new ArrayList<Getraenk>();
+    		for(int i = 0; i < getraenke.size(); i++){
+        		if(initBestellung.getPreis() >= 40){
+        			if(getraenke.get(i).getPreis() >= 10){
+        				bonusgetraenke.add(getraenke.get(i));
+        			}
+        		}else{
+        			if(getraenke.get(i).getPreis() < 10){
+        				bonusgetraenke.add(getraenke.get(i));
+        			}
+        		}
+    		}
+    		bonusGetraenkAuswahl.setItems(FXCollections.observableArrayList(bonusgetraenke));
+    	}
+    	
+    	
+    } 
+    
+    @FXML
+    void neuePizza(MouseEvent event) {
+    	
+    	pizzaGroesse.setVisible(true);
+    	pizzaGroesse.getSelectionModel().clearSelection();
+
+		bestellButtonsEinfach.setVisible(false);
+    	bestellButtonsSpeziel.setVisible(false);
+    	bestellGetraenke.setVisible(false);
+    	neuePizza.setVisible(false);
+    }
+
+    @FXML
+    void bestellungAnlegen(MouseEvent event) {
+    	
+    	ArrayList<Pizza> pizzen = initBestellung.getPizzen();
+    	
+    	DAOFactory.getBestellungkDAO().insertBestellung(initBestellung);
+    	
+    	for(int i = 0; i < pizzen.size(); i++){
+    		DAOFactory.getPizzaDAO().insertPizza(pizzen.get(i), initBestellung.getId());
+    	}
+    	
+    	ArrayList<Getraenk> getraenke = initBestellung.getGetraenke();
+    	
+    	for(int i = 0; i < getraenke.size(); i++){
+    		DAOFactory.getGetraenkDAO().insertGetraenkBestellt(getraenke.get(i), initBestellung.getId());
+    	}
+    	 
+    	initBestellung = new Bestellung();
+    	bestellungsAnzeige.setRoot(null);
+    	
+    	pizzaGroesse.getSelectionModel().clearSelection();
+    	
+		bonusGetraenkLabel.setVisible(false);
+		bonusGetraenkAuswahl.setVisible(false);
+    	labelGesamtAnzeige.setVisible(false);
+		gesamtAnzeige.setVisible(false);
+		kundenNameAnzeige.setVisible(false);
+		bestellungAnlegenButton.setVisible(false);
+		bestellungsAnzeige.setVisible(false);
+		pizzaGroesse.setVisible(false);
+		labelPizzaAuswählen.setVisible(false);	
+		bestellButtonsEinfach.setVisible(false);
+    	bestellButtonsSpeziel.setVisible(false);
+    	bestellGetraenke.setVisible(false);
+    	neuePizza.setVisible(false);
+    	
+    	tabPane.getSelectionModel().select(kunde);
+    	
+    	kueche();
+    }
+       
     public void kueche(){
     	
     	final String titleTxt = "Status Update";
@@ -545,6 +541,7 @@ public class KundenController implements Initializable  {
 					    		  DAOFactory.getBestellungkDAO().updateBestellung(bestellId);
 					    		  neueBestellungen.getChildren().clear();
 					    		  kueche();
+					    		  kasse();
 					    	  }
 					      }
 					    });
@@ -555,13 +552,19 @@ public class KundenController implements Initializable  {
 				}
 			}
 		}
-		kasse();
     }
     
     public void kasse(){
     	
     	ArrayList<Bestellung> bestellungen = new ArrayList<Bestellung>();
 		bestellungen.addAll(DAOFactory.getBestellungkDAO().fertigBestellungen());
+		
+		if(bestellungen.size() <= 0){
+			belegKunde.setVisible(false);
+			belegFirma.setVisible(false);
+			kundeAnzeigeKasse.setVisible(false);
+			print.setVisible(false);
+		}
 		
 		int z = 0;
 			for(int i = 0 ; i < bestellungen.size() ; i++){
@@ -574,12 +577,23 @@ public class KundenController implements Initializable  {
 				button.setMaxHeight(50);
 				button.setAlignment(Pos.CENTER);
 				button.addEventFilter(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+					
 			          @Override
 			          public void handle(MouseEvent e) {
-			        	  belegKunde.clear();
-			        	  belegFirma.clear();
-			        	  belegKunde.appendText(belegKunde(bestellungen.get(a)));
-			        	  belegFirma.appendText(belegFirma(bestellungen.get(a)));
+			        	  belegKunde.setText("");
+			        	  belegFirma.setText("");
+
+			        	  String bk = belegKunde(bestellungen.get(a));
+			        	  belegKunde.setMaxHeight(600);
+			        	  belegKunde.setMaxWidth(600);
+			        	  belegKunde.setAlignment(Pos.TOP_LEFT);
+			        	  belegKunde.setText(bk);
+			        	  
+			        	  String bf = belegFirma(bestellungen.get(a));
+			        	  belegFirma.setMaxHeight(600);
+			        	  belegFirma.setMaxWidth(600);
+			        	  belegFirma.setAlignment(Pos.TOP_LEFT);
+			        	  belegFirma.setText(bf);
 			        	  
 			        	  Button buttonPrint = new Button("Drucken");
 			        	  buttonPrint.setMaxWidth(120);
@@ -590,8 +604,8 @@ public class KundenController implements Initializable  {
 							@Override
 							public void handle(MouseEvent event) {
 								DAOFactory.getBestellungkDAO().updateFertigBestellung(bestellungen.get(a).getId());
-					        	belegKunde.clear();
-					        	belegFirma.clear();
+					        	belegKunde.setText("");
+					        	belegFirma.setText("");
 								kundeAnzeigeKasse.getChildren().clear();
 								print.getChildren().clear();
 								kasse();
@@ -610,7 +624,6 @@ public class KundenController implements Initializable  {
 			
 			ArrayList<Pizza> pizzen = new ArrayList<Pizza>();
 			pizzen.addAll(DAOFactory.getPizzaDAO().findPizza(bestellId));
-
 		}
     }
     
@@ -631,8 +644,7 @@ public class KundenController implements Initializable  {
     	t += bestellung.getKunde().getPlz() + "\n";
     	t += "\n";
     	t += "Pizzen:";
-    	t += "\n";
-    	
+    	t += "\n"; 	
     	
 		for(int x = 0 ; x < pizzen.size() ; x++){
 			t += "Pizza " + pizzen.get(x).getPizzaGroesse().getGroesse();
@@ -648,7 +660,7 @@ public class KundenController implements Initializable  {
 			}
 		}
 		
-		if(getraenke != null){
+		if(getraenke.isEmpty() == false){
 			t += "\n";
 			t += "Getränke:";
 			t += "\n";
@@ -664,7 +676,7 @@ public class KundenController implements Initializable  {
 		Preisberechnung.komplettPreisBerechnung(bestellung);
 		t += "Gesamt: " + bestellung.getPreis();
 		
-		return t;
+		return t;	
     }
     
     public String belegFirma(Bestellung bestellung){
