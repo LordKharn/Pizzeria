@@ -3,6 +3,7 @@ package Dao;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.sql.Connection;
 
@@ -15,24 +16,25 @@ public class GetraenkDAO {
 		this.dbConnect = (Connection) DAOFactory.createConnection();
 	}
 	
-//	public Getraenk findGetraenke(int id) {
-//		String sql ="SELECT * FROM getraenk WHERE ID= " + id;
-//		Getraenk getraenk = null;
-//		if(this.dbConnect != null){
-//			try{
-//				PreparedStatement preStm = this.dbConnect.prepareStatement(sql);
-//				ResultSet rs = preStm.executeQuery();
-//				rs.first();
-//				getraenk = new Getraenk(rs.getInt(1),rs.getString(2),rs.getDouble(3));
-//				preStm.close();
-//				return getraenk;
-//			}
-//			catch (SQLException e) {
-//				e.printStackTrace();
-//			}
-//		}
-//		return getraenk;
-//	}
+	public ArrayList<Getraenk> findGetraenke(int bestellId) {
+		String sql ="SELECT g.ID, g.Name, g.Preis FROM getraenk g, getraenkebestellung gb WHERE gb.BestellungsID = " + bestellId + " AND g.ID = gb.GetraenkID";
+		ArrayList<Getraenk> getraenk = new ArrayList<Getraenk>();
+		if(this.dbConnect != null){
+			try{
+				PreparedStatement preStm = this.dbConnect.prepareStatement(sql);
+				ResultSet rs = preStm.executeQuery();
+				while(rs.next()){
+					getraenk.add(new Getraenk(rs.getInt(1),rs.getString(2),rs.getDouble(3)));
+				}
+				preStm.close();
+				return getraenk;
+			}
+			catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return getraenk;
+	}
 	
 	public void insertGetraenkBestellt(Getraenk getraenk, int bestellId){
 		String sql ="INSERT INTO getraenkebestellung (GetraenkID, BestellungsID) VALUES (" + getraenk.getId() + "," + bestellId + ")";
