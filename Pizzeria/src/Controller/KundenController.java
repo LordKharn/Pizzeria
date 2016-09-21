@@ -53,7 +53,17 @@ import javafx.util.Callback;
 
 public class KundenController implements Initializable  {
 	private Main mainApp;
+    TreeItem<TreeTableItem> root = new TreeItem<>();
 	private Bestellung initBestellung = new Bestellung();
+	
+    @FXML
+    private TabPane tabPane;
+	
+	//KundenTab
+    @FXML
+    private Tab kunde;
+    
+	// -- Tablle zum Kunden Anzeigen
 	@FXML
 	private TableView<Kunde> KundenTabelle;
 	@FXML
@@ -65,15 +75,17 @@ public class KundenController implements Initializable  {
     @FXML
     private TableColumn<Kunde, String> KundenStrasse;
     @FXML
-    private Button listAllKunden;
-    @FXML
     private TableColumn<Kunde, Integer> KundenPlz;
     @FXML
     private TextField sucheKunde;
     @FXML
-    private Button sucheKundeButton;
-    @FXML
     private TextField sucheKundeName;
+    @FXML
+    private Button listAllKunden;
+    @FXML
+    private Button sucheKundeButton;
+    
+    // -- Tablle zum Anlegen des Kunden
     @FXML
     private AnchorPane kundenAnlegenTabelle;
     @FXML
@@ -86,20 +98,32 @@ public class KundenController implements Initializable  {
     private TextField kundenStrasseAnlegen;
     @FXML
     private Button kundenAnlegen;
+	
+	//BestellenTab
     @FXML
     private Tab bestellen;
     @FXML
-    private Tab kunde;
+    private Label kundenNameAnzeige;
     @FXML
-    private TabPane tabPane;
+    private Label labelGesamtAnzeige;
+    @FXML
+    private Label gesamtAnzeige;
+    
+    // -- Pizza zusammen stellen
+    @FXML
+    private Label labelPizzaAuswählen;
     @FXML
     private ChoiceBox<String> pizzaGroesse;
+    @FXML
+    private Button neuePizza;
     @FXML
     private GridPane bestellButtonsEinfach;
     @FXML
     private GridPane bestellButtonsSpeziel;
     @FXML
     private GridPane bestellGetraenke;
+    
+    // -- Bestellende Pizza anzeigen
     @FXML
     private TreeTableView<TreeTableItem> bestellungsAnzeige;
     @FXML
@@ -107,25 +131,22 @@ public class KundenController implements Initializable  {
     @FXML
     private TreeTableColumn<TreeTableItem, Double> Preis;
     @FXML
-    private Label labelPizzaAuswählen;
-    @FXML
-    private Button neuePizza;
-    @FXML
-    private Button bestellungAnlegenButton;
-    @FXML
-    private Label kundenNameAnzeige;
-    @FXML
-    private Label labelGesamtAnzeige;
-    @FXML
-    private Label gesamtAnzeige;
-    @FXML
-    private GridPane neueBestellungen;
+    private ChoiceBox<Getraenk> bonusGetraenkAuswahl;
     @FXML
     private Label bonusGetraenkLabel;
     @FXML
-    private ChoiceBox<Getraenk> bonusGetraenkAuswahl;
+    private Button bestellungAnlegenButton;
+
+    
+    //KüchenTab
+    @FXML
+    private GridPane neueBestellungen;
+    
+    //KassenTab
     @FXML
     private Tab kasse;
+
+    // -- Anzeige der Belege
     @FXML
     private GridPane kundeAnzeigeKasse;
     @FXML
@@ -134,12 +155,8 @@ public class KundenController implements Initializable  {
     private TextArea belegFirma;
     @FXML
     private GridPane print;
-    
-    private static final String titleTxt = "Status Update";
-    
-    TreeItem<TreeTableItem> root = new TreeItem<>();
 
-	@Override
+    @Override
 	public void initialize(URL location, ResourceBundle resources) {
 		root.setExpanded(true);
 		bestellungsAnzeige.setRoot(root);
@@ -166,7 +183,6 @@ public class KundenController implements Initializable  {
 		KundenPlz.setCellValueFactory(new PropertyValueFactory<Kunde, Integer>("plz"));
 		kueche();
 		kasse();
-		
 	}
 	
 	@FXML
@@ -477,6 +493,8 @@ public class KundenController implements Initializable  {
     }
     
     public void kueche(){
+    	
+    	final String titleTxt = "Status Update";
     	
 		ArrayList<Bestellung> bestellungen = new ArrayList<Bestellung>();
 		bestellungen.addAll(DAOFactory.getBestellungkDAO().neueBestellungen());
