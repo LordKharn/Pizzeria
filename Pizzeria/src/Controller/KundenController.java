@@ -489,6 +489,7 @@ public class KundenController implements Initializable  {
     }
        
     public void kueche(){
+    	kasse();
     	
     	final String titleTxt = "Status Update";
     	
@@ -541,7 +542,6 @@ public class KundenController implements Initializable  {
 					    		  DAOFactory.getBestellungkDAO().updateBestellung(bestellId);
 					    		  neueBestellungen.getChildren().clear();
 					    		  kueche();
-					    		  kasse();
 					    	  }
 					      }
 					    });
@@ -553,7 +553,7 @@ public class KundenController implements Initializable  {
 			}
 		}
     }
-    
+        
     public void kasse(){
     	
     	ArrayList<Bestellung> bestellungen = new ArrayList<Bestellung>();
