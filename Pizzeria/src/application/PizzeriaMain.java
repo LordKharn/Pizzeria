@@ -12,12 +12,12 @@ import javafx.scene.Scene;
 import javafx.scene.control.TabPane;
 
 
-public class Main extends Application { 
+public class PizzeriaMain extends Application { 
 	@Override
 	public void start(Stage primaryStage) {
 		FXMLLoader loader = new FXMLLoader();
 		try {
-			loader.setLocation(Main.class.getResource("../View/view.fxml"));
+			loader.setLocation(PizzeriaMain.class.getResource("../View/view.fxml"));
 			TabPane view = (TabPane) loader.load();
 			KundenController controller = loader.getController();
 			controller.setMainApp(this);

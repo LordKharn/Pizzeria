@@ -14,7 +14,7 @@ import Models.Bestellung;
 import Models.Getraenk;
 import Models.Kunde;
 import Models.Pizza;
-import application.Main;
+import application.PizzeriaMain;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -51,7 +51,7 @@ import javafx.scene.text.Text;
 import javafx.util.Callback;
 
 public class KundenController implements Initializable  {
-	private Main mainApp;
+	private PizzeriaMain mainApp;
     TreeItem<TreeTableItem> root = new TreeItem<>();
 	private Bestellung initBestellung = new Bestellung();
 	
@@ -287,7 +287,7 @@ public class KundenController implements Initializable  {
 		KundenTabelle.setItems(mainApp.getKunden());
 	}
 
-	public void setMainApp(Main mainApp) {
+	public void setMainApp(PizzeriaMain mainApp) {
 		this.mainApp = mainApp;
 	}
 
@@ -489,6 +489,7 @@ public class KundenController implements Initializable  {
     }
        
     public void kueche(){
+    	kasse();
     	
     	final String titleTxt = "Status Update";
     	
@@ -541,7 +542,6 @@ public class KundenController implements Initializable  {
 					    		  DAOFactory.getBestellungkDAO().updateBestellung(bestellId);
 					    		  neueBestellungen.getChildren().clear();
 					    		  kueche();
-					    		  kasse();
 					    	  }
 					      }
 					    });
@@ -553,7 +553,7 @@ public class KundenController implements Initializable  {
 			}
 		}
     }
-    
+        
     public void kasse(){
     	
     	ArrayList<Bestellung> bestellungen = new ArrayList<Bestellung>();
