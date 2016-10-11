@@ -17,7 +17,7 @@ public class PizzeriaMain extends Application {
 	public void start(Stage primaryStage) {
 		FXMLLoader loader = new FXMLLoader();
 		try {
-			loader.setLocation(PizzeriaMain.class.getResource("./view.fxml"));
+			loader.setLocation(PizzeriaMain.class.getResource("view.fxml"));
 			TabPane view = (TabPane) loader.load();
 			KundenController controller = loader.getController();
 			controller.setMainApp(this);
