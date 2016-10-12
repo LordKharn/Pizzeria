@@ -45,8 +45,6 @@ public class Preisberechnung {
 			pizza.setPreis(pizza.getPreis()+belagspreis);
 			discountamount --;
 		}
-		
-		
 	}
 	
 	public static void preisBerechnung(Bestellung bestellung){

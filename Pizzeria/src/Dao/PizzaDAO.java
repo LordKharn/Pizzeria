@@ -55,7 +55,9 @@ public class PizzaDAO {
 	}
 	
 	public ArrayList<Pizza> findPizza(int BestellId){
-		String sql="SELECT p.ID, p.Pizzagroesse, pb.BelagID FROM pizza p LEFT JOIN Pizzabelag pb ON p.ID = pb.PizzaID LEFT JOIN belag b ON b.ID = pb.BelagID WHERE p.Bestellungsid = " + BestellId + " ORDER BY p.ID ";
+		String sql="SELECT p.ID, p.Pizzagroesse, pb.BelagID "
+				+ "FROM pizza p LEFT JOIN Pizzabelag pb ON p.ID = pb.PizzaID "
+				+ "LEFT JOIN belag b ON b.ID = pb.BelagID WHERE p.Bestellungsid = " + BestellId + " ORDER BY p.ID ";
 		ArrayList<Pizza> pizzalist = new ArrayList<Pizza>();
 		if(this.dbConnect != null){
 			try{
